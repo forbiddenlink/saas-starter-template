@@ -1,4 +1,4 @@
-import "./src/env.js";
+import "./src/env.ts";
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
@@ -28,7 +28,6 @@ const sentryConfig = {
   disableLogger: true,
 
   // Hide source maps from generated client bundles
-  hideSourceMaps: true,
 
   // Automatically instrument API routes and server components
   autoInstrumentServerFunctions: true,

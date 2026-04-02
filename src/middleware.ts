@@ -4,8 +4,6 @@ import type { NextRequest } from "next/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-
-
 // Rate limiter — only active when Upstash env vars are set
 const ratelimit =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -39,26 +37,25 @@ export async function middleware(request: NextRequest) {
       "127.0.0.1";
     const { success } = await ratelimit.limit(ip);
     if (!success) {
-      return NextResponse.json(
-        { error: "Too Many Requests" },
-        { status: 429 }
-      );
+      return NextResponse.json({ error: "Too Many Requests" }, { status: 429 });
     }
   }
-
 
   const response = NextResponse.next();
 
   // Security headers
   response.headers.set("X-DNS-Prefetch-Control", "on");
-  response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=63072000; includeSubDomains; preload",
+  );
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("X-XSS-Protection", "1; mode=block");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   );
 
   return response;
