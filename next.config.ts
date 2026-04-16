@@ -1,6 +1,9 @@
 import "./src/env.ts";
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
+import withBundleAnalyzerInit from "@next/bundle-analyzer";
+const withBundleAnalyzer = withBundleAnalyzerInit({ enabled: process.env.ANALYZE === "true" });
+
 
 const nextConfig: NextConfig = {
   // Recommended for production
@@ -39,4 +42,4 @@ const config = process.env.SENTRY_DSN
   ? withSentryConfig(nextConfig, sentryConfig)
   : nextConfig;
 
-export default config;
+export default withBundleAnalyzer(config);
