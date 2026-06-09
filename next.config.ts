@@ -1,4 +1,4 @@
-import "./src/env.ts";
+import "./src/env";
 import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 import withBundleAnalyzerInit from "@next/bundle-analyzer";
