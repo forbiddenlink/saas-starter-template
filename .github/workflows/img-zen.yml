@@ -1,0 +1,35 @@
+# Optimizes images (AVIF/WebP) on PRs that touch public assets.
+# Uses forbiddenlink/img-zen (own Rust image-optimization Action).
+name: Image Optimization
+
+on:
+  pull_request:
+    paths:
+      - "public/**"
+      - "src/**/*.{png,jpg,jpeg}"
+
+permissions:
+  contents: read
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ImgZen
+        id: imgzen
+        uses: forbiddenlink/img-zen@main
+        with:
+          paths: "./public"
+          generate-formats: "avif, webp"
+          quality: "75"
+          inject-lazy-loading: "false"
+      - name: Report
+        if: always()
+        env:
+          SAVED: ${{ steps.imgzen.outputs.saved-size }}
+          REPORT: ${{ steps.imgzen.outputs.report }}
+        run: |
+          echo "### ImgZen image optimization" >> "$GITHUB_STEP_SUMMARY"
+          echo "Saved: $SAVED" >> "$GITHUB_STEP_SUMMARY"
+          echo "$REPORT" >> "$GITHUB_STEP_SUMMARY"
